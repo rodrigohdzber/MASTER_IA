@@ -1,0 +1,80 @@
+Twitter
+
+Logic apps, agregar, crear.
+
+plantilla en blanco, buscador ponemos twitter(conector) hay muchisimos conectores.
+Una vez que has seleccionado twitter nos pide que nos logeemos y que pidamos el texto que 
+queremos buscar y la frecuencia
+Ya va a encontrar todos los tweets que tengan #bigdata.
+
+Siguiente paso: como quieres analizar esos tweets en este caso sentimiento(test_analytics, sentimiento).
+
+En otra pestaña de inicio tenemos que buscar text analytics hay q buscarlo en market porque no sale
+la creamos y ponemos las claves en la pestaña anterior, en la de twitter.
+
+Una vez puesto las credenciales y la url seleccionamos que queremos que nos de twitter
+ID del tweet y tecto del tweet.
+
+creamos un sqldatabase
+
+Siguiente paso en el diseñador de logic apps (de momento, cuando se publica un tweet, sentimiento)
+ahora diriamos a una base de sql server(insertar una fila) nos pide la consexion,(vamos
+a el recurso de la base de datos sql y en editor de consultas nos auteticamos(rhdzber,monopatin10)
+en la consulta ponemos esto 
+CREATE TABLE Twitter
+(
+id_tweet varchar(50),
+tweet varchar(256),
+retweet int,
+followers bigint,
+friends bigint,
+positivo float,
+neutro float,
+negativo float,
+sentimiento varchar(10)
+)
+ya tenemos creada la tabla
+
+Entonces ahora volvemos al diseño de la logic app y en el siguiente paso,
+sql server ponemos el nombre(sql), authetication type(SQL Server Authentication),
+SQL server name(nombre del servidor en informacion general del recurso sql)
+sql database name(Sentimiento)
+
+hay que permitir la direccion ip por eso vamos a informacion general de la bssql
+firewalls y redes virtuales cambiar a si.
+Volvemos y rellenamos los campos.
+
+Ahora lo ejecutamos y volvemos a la base de datos informacion general base de datos y 
+editar consultas, nos validamos
+
+Por ultimo queda como analizariamos esa informacion. en consultas por ejemplo
+SELECT avg(positivo) FROM [dbo].[Twitter] nos diria cuantos positivos hay
+SELECT avg(positivo), avg(neutro), avg(negativo) FROM [dbo].[Twitter]
+
+luego habria que acceder a la maquina virtual la del remoto la del primer dia
+que la borramos... y nos podemos conectar a esa fuente de informacion por ejemplo desde
+un visualizador como power bi.
+
+Tambien podriamos utilizarlo como un a fuente de entrada en un experimento de ML.
+
+NOTA: al crear una base de datos te pide que crees un servidor ahi se crea.
+
+Para power BI: obtener datos. azure, azure sql, conecgar, nombre del servidor copy paste,
+directquery, aceptar. uso base de datos (usuario y contra de nuestra bd) y conectamos.
+cargamos la tabla desde el servidor a la izquierda. y ya jugamos con la tabla dinamica.
+
+Por último el ML crar experimento, data input azure database sql(manualmente rellenamos
+los campos) y nos pide traer una consulta por ejmplo select * from dbo.twitter. ejecutamos
+visualizo.
+ahi ya tendriamos nuestra informacion para poder trabajar con ella como fuente de entrada.
+
+Nos queda clacular el impacto(select (retweet*followers*friends) as impacto from t1;
+le damos a ejecutar. (esto es el apply sql transformation)
+
+luego podriamos oner un join deel input y el transform con las columnas que quiero.
+
+Podria hacer una prediccion con ls datos que tengo por ejemplo(aunq son muy pocos datos)
+
+SI la logic app está en funcionamiento cada vez que lleguen nuevos datos se actualizara
+el input.
+
